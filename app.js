@@ -6,6 +6,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var cors = require('cors')
 
 var index = require('./routes/index');
 var getSongs = require('./routes/songList');
@@ -24,13 +25,7 @@ app.use('/', index);
 app.use('/getSongs', getSongs);
 app.use('/searchSongs', searchSongs);
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-    next();
-})
+app.use(cors());
 
 // error handler
 app.use(function (err, req, res, next) {
