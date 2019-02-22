@@ -1,7 +1,16 @@
 var connection = require('./connectToDB');
 
-function getSongList(cb) {
+function getTopSongList(cb) {
     connection.query('SELECT * FROM spotify ORDER BY `rank` ASC LIMIT 50', function (error, results, fields) {
+        if (error) {
+            return cb(error, null);
+        }
+        return cb(null, results)
+    });
+}
+
+function getSongList(cb) {
+    connection.query('SELECT * FROM spotify ORDER BY `rank` ASC', function (error, results, fields) {
         if (error) {
             return cb(error, null);
         }
@@ -20,6 +29,7 @@ function getSongsBasedOnSearch(searchInput, cb) {
 }
 
 module.exports = {
+    getTopSongList,
     getSongList,
     getSongsBasedOnSearch
 }
