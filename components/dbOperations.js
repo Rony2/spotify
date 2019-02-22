@@ -10,7 +10,7 @@ function getSongList(cb) {
 }
 
 function getSongsBasedOnSearch(searchInput, cb) {
-    searchInput = `\"${searchInput}\"`;
+    searchInput = `\"%${searchInput}%\"`;
     connection.query(`SELECT * FROM spotify WHERE artists LIKE ${searchInput} OR name LIKE ${searchInput} LIMIT 50`, function (error, results, fields) {
         if (error) {
             return cb(error, null);
