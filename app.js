@@ -1,17 +1,16 @@
 var http = require('http');
 var debug = require('debug')('spotify:server');
 
+const cron = require("node-cron");
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var getSongs = require('./routes/songList');
-var searchSongs = require('./routes/searchSongs');
-
 var app = express();
+
+var scheduleJobs = require('./firebase').scheduleJobs;
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", '*');
@@ -28,10 +27,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 
-app.use('/', index);
-app.use('/getSongs', getSongs);
-app.use('/searchSongs', searchSongs);
-
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -47,6 +42,11 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 var server = http.createServer(app);
+
+cron.schedule("*/59 * * * *", function () {
+  console.log('calling schedlue');
+  scheduleJobs();
+});
 
 server.listen(port);
 server.on('error', onError);
